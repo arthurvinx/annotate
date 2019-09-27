@@ -11,11 +11,15 @@ build:
 requirements:
     build:
     - python 2.7.*
-    - setuptools
     - pip
+    - setuptools
     run:
     - python 2.7.*
     - plyvel
+
+test:
+    imports:
+        - plyvel
 
 about:
     license: GPL3
