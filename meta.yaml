@@ -1,0 +1,27 @@
+{$ set setup_py = load_setup_py_data() %}
+
+package:
+    name: 'annotate'
+    version: {{ setup_py.get('version') }}
+
+source:
+    path: ./
+    git_url: https://github.com/arthurvinx/annotate.git
+
+build:
+    script: python setup.py install
+
+requirements:
+    build:
+    - python 2.7.15 h138c1fe_0
+    - setuptools 40.4.3 py27_0
+    run:
+    - leveldb
+    - plyvel
+    - python 2.7.*
+    - basta
+
+about:
+    license: {{ setup_py.get('license') }}
+    license_file: LICENSE
+    summary: {{ setup_py.get('description') }}
