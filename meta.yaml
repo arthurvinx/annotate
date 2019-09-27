@@ -4,6 +4,11 @@ package:
     name: 'annotate'
     version: {{ setup_py.get('version') }}
 
+channels:
+  - bnoon
+  - bioconda
+  - timkahlke
+
 source:
     path: ./
     git_url: https://github.com/arthurvinx/annotate.git
@@ -13,12 +18,28 @@ build:
 
 requirements:
     build:
+    - wheel 0.32.1 py27_0
+    - sqlite 3.25.2 ha441bb4_0
+    - libedit 3.1.20170329 hb402a30_2
+    - libcxxabi 4.0.1 hebd6815_0
+    - ncurses 6.1 h0a44026_0
+    - libcxx 4.0.1 h579ed51_0
+    - zlib 1.2.11 hf3cbc9b_2
+    - openssl 1.0.2p h1de35cc_0
     - python 2.7.15 h138c1fe_0
+    - ca-certificates 2018.03.07 0
+    - tk 8.6.8 ha441bb4_0
     - setuptools 40.4.3 py27_0
+    - libffi 3.2.1 1
+    - pip 10.0.1 py27_0
+    - readline 7.0 h1de35cc_5
+    - certifi 2018.10.15 py27_0
     run:
+    - krona
     - leveldb
     - plyvel
     - python 2.7.*
+    - wget
     - basta
 
 about:
