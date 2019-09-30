@@ -6,17 +6,19 @@ source:
     path: ./
 
 build:
-    script: python setup.py install
+    noarch: generic
+    number: '1'
+    script: python setup.py install --single-version-externally-managed --record record.txt
+    string: py27_1
 
 requirements:
     build:
+    - setuptools
     - python 2.7.*
     - plyvel
-    - setuptools
     run:
     - python 2.7.*
     - plyvel
-
 test:
     imports:
         - plyvel

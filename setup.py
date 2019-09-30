@@ -8,6 +8,5 @@ setup(
     license = 'GPL3',
     version = '1.1',
     url = 'https://github.com/arthurvinx/annotate',
-    install_requires = ['plyvel'],
     packages = ['annotate']
 )
