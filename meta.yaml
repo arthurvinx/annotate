@@ -25,3 +25,7 @@ about:
   license: GPL3
   license_file: LICENSE
   home: https://github.com/arthurvinx/annotate
+  description: 'This package uses a levelDB (key-value repository) to annotate each query, from a BLAST tabular output, using the best alignment for which a mapping is known.
+
+To create a levelDB from a mapping file use [basta create_db](https://github.com/timkahlke/BASTA/wiki/3.-BASTA-Usage#custom-mapping-databases). A mapping file is composed by a header and two columns, the first one contains the identifiers that will be used as keys, without duplicates, and the second one contains their respective values. These keys are expected to be found in the hits/subject column from a BLAST tabular output, and their values are used for the annotation.
+  installers: 'conda install -c bnoon -c timkahlke -c bioconda -c arthurvinx annotate'
