@@ -146,6 +146,8 @@ idmapping_parser.add_argument("--pidentCol", help="Column index (0-based) in whi
 idmapping_parser.add_argument("--all", help="Try to annotate all hits (default: False)", type=str2bool, default=False)
 idmapping_parser.add_argument("--unknown", help="Whether to write 'Unknown' in the output for unknown mappings (default: True)", type=str2bool, default=True)
 idmapping_parser.add_argument("--sep", help="The separator between columns (default: \\t)", default="\t")
+
+fixplyvel = subparsers.add_parser("fixplyvel", description="Fix plyvel undefined symbol error by reinstalling it")
 args = parser.parse_args()
 
 #check args
@@ -199,5 +201,7 @@ elif args.subparser_name == "idmapping":
     print("Done!")
     elapsed_time = time.time() - start_time
     print("Time: "+str(elapsed_time)+" seconds.")
+elif args.subparser_name == "fixplyvel":
+    os.system("pip3 install -U plyvel --no-cache-dir --no-deps --force-reinstall")
 else:
     parser.print_help()

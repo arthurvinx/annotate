@@ -16,15 +16,6 @@ requirements:
   run:
   - python 3.9.*
   - plyvel 1.3.*
-test:
-  requires:
-      - python 3.9.*
-      - plyvel 1.3.*
-      - pip
-  source_files:
-      - plyvelFix.py
-  imports:
-      - plyvel
 
 about:
   license: GPL3
