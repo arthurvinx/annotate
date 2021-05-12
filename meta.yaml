@@ -1,6 +1,6 @@
 package:
   name: 'annotate'
-  version: '1.1'
+  version: '1.2'
 
 source:
   git_url: https://github.com/arthurvinx/annotate.git
@@ -11,12 +11,11 @@ build:
 requirements:
   build:
   - setuptools
-  - python 2.7.*
+  - python 3.9.*
   - plyvel
   run:
-  - python 2.7.*
+  - python 3.9.*
   - plyvel
-  - basta
 test:
   imports:
       - plyvel
