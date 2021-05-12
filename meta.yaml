@@ -22,7 +22,7 @@ test:
       - plyvel 1.3.*
       - pip
   source_files:
-      - plyvelFix.sh
+      - plyvelFix.py
   imports:
       - plyvel
 
