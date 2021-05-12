@@ -12,10 +12,10 @@ requirements:
   build:
   - setuptools
   - python 3.9.*
-  - plyvel
+  - plyvel 1.3.0
   run:
   - python 3.9.*
-  - plyvel
+  - plyvel 1.3.0
 test:
   imports:
       - plyvel
