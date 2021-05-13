@@ -21,14 +21,16 @@ test:
   files:
   - test/diamond.m8
   - test/input.txt
+  - test/output.txt
   requires:
   - pip
   commands:
   - pip3 install -U plyvel --no-cache-dir --no-deps --force-reinstall
   - annotate -v
   - annotate fixplyvel
-  - annotate createdb input.txt example 0 1 -d .
-  - annotate idmapping diamond.m8 output.txt example -d .
+  - annotate createdb test/input.txt example 0 1 -d .
+  - annotate idmapping test/diamond.m8 output.txt example -d .
+  - diff test/output.txt output.txt
 
 about:
   license: GPL3
