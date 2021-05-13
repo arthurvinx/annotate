@@ -26,8 +26,6 @@ test:
   - annotate fixplyvel
   - annotate createdb input.txt example 0 1 -d .
   - annotate idmapping diamond.m8 output.txt example -d .
-  imports:
-  - plyvel
 
 about:
   license: GPL3
