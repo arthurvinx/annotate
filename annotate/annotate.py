@@ -117,6 +117,7 @@ def createLevelDB(input, key, value, sep, header, db):
 
 #help
 parser = argparse.ArgumentParser(description="Annotate each query using the best alignment for which a mapping is known")
+parser.add_argument("-v", "--version", action="version", version="Annotate 1.0")
 subparsers = parser.add_subparsers(help="Sub-command help", dest="subparser_name")
 
 createdb_parser = subparsers.add_parser("createdb", description="Create/Update a mapping database")
