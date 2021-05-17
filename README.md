@@ -179,7 +179,7 @@ optional arguments:
 
 After the creation of a levelDB database, the `imapping` sub-command can be used to map the queries from a BLAST/DIAMOND tabular output to new identifiers. In this example we will use a DIAMOND output containing GenBank/RefSeq identifiers in the hits/subject column ([diamond.m8](https://github.com/arthurvinx/annotate/blob/master/test/diamond.m8)).
 
-Three arguments are required to annotate queries, an input, an output, and the database used for the mapping. To annotate the queries using the `example` database, type:
+Three arguments are required to annotate queries: an input, an output, and the database to be used for the mappings. To annotate the queries using the `example` database, type:
 
 ```bash
 annotate idmapping diamond.m8 output.txt example
@@ -189,9 +189,9 @@ annotate idmapping diamond.m8 output.txt example
 
 - Output: The desired output filename. The result is a tab-separated text file. (`output.txt`).
 
-- The prefix of the levelDB to be used for the mappings (`example`).
+- LDB: The prefix of the levelDB to be used for the mappings (`example`).
 
-The expected ([output.txt](https://github.com/arthurvinx/annotate/blob/master/test/output.txt)) for this example is:
+The expected [output.txt](https://github.com/arthurvinx/annotate/blob/master/test/output.txt) for this example is:
 
 **Example output**
 
@@ -210,9 +210,9 @@ The default options generate an output containing one line for each query from t
 
 In the **Example output**:
 
-- read 1 has a mapping known, but do not meet the default minimum alignment length threshold.
-- read 3 has no mapping known for the only hit.
-- read 5 and read 8 were mapped for the second hit because the first had no known mapping.
+- The read 1 has a mapping known, but do not meet the default minimum alignment length threshold, being mapped to `Unknown`.
+- The read 3 has only one hit, with no known mapping, being mapped to `Unknown`.
+- The read 5 and the read 8 were mapped for the second hit, because the first hit had no known mapping.
 
 This software also tries to accommodate different file formats with at least 6 columns: query, subject, percent identity, alignment length, e-value, and bit score.
 You can specify where the expected columns are located if your input is not in the BLAST/DIAMOND tabular format. To see a list of the existing arguments, type:
