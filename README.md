@@ -13,9 +13,10 @@ The easiest way to install this software, including its dependencies, is via [co
 
 ```bash
 conda install -c conda-forge -c arthurvinx annotate
+pip3 install -U plyvel --no-cache-dir --no-deps --force-reinstall
 ```
 
-The conda-forge channel is necessary to get the main dependency, the plyvel Python package.
+The conda-forge channel is necessary to get the main dependency, the plyvel Python package. The pip command will avoid an import error described at the [Fixing plyvel](https://github.com/arthurvinx/annotate#fixing-plyvel) section.
 
 Check whether your installation succeeded by typing:
 
@@ -39,15 +40,15 @@ optional arguments:
   -v, --version         show program's version number and exit
 ```
 
-As a alternative, you may install the plyvel package (version >= 1.3.0) via pip, download this repository contents, and use the annotate Python script.
+As an alternative, you may install the plyvel package (version >= 1.3.0) via pip, download this repository contents, and use the annotate Python script.
 
 ## Usage
 
 Annotate uses a [levelDB](https://github.com/google/leveldb) database (key-value disk repository) to map queries to new identifiers.
 
-A mapping file is required to create a levelDB database. A valid mapping file is composed by a header (opcional) and at least two columns, one containing the identifiers that will be used as keys, and the other containing the values mapped for each key:
+A mapping file is required to create a levelDB repository. A valid mapping file is composed by a header (opcional) and at least two columns, one containing the identifiers that will be used as keys, and the other containing the values mapped for each key:
 
-**Example 1**
+**Input 1**
 
 | key | value |
 | --- | ----- |
@@ -56,11 +57,11 @@ A mapping file is required to create a levelDB database. A valid mapping file is
 | c   | 3     |
 | a   | 4     |
 
-In the case of duplicated keys, such as the key 'a' from **Example 1**, the value for this key in the database will be replaced for each new entry found in the mapping file. Thus, the final value for the key 'a' is 4.
+In the case of duplicated keys, such as the key `a` from **Input 1**, the value for this key in the database will be replaced for each new entry found in the mapping file. Thus, the final value for the key `a` is `4`.
 
 There are arguments used to create the database that inform in which column to find the keys/values, as well as an argument informing the presence/absence of a header.
 
-To download a zip file containing the example data used in the next sections [click here](https://gist.github.com/jvfe/a1c913cd9f04c073f6d0e8a5ae85a10f/archive/eef5c90c96a4f590c6cb1cf123ca54cc4d7968c0.zip). These files are also present in the [test](https://github.com/arthurvinx/annotate/tree/master/test) folder.
+To download a zip file containing the example data used in the next sections, [click here](https://gist.github.com/jvfe/a1c913cd9f04c073f6d0e8a5ae85a10f/archive/eef5c90c96a4f590c6cb1cf123ca54cc4d7968c0.zip). These files are also present in the [test](https://github.com/arthurvinx/annotate/tree/master/test) folder.
 
 ### Creating the database
 
@@ -87,10 +88,10 @@ optional arguments:
                         $HOME/.annotate/levelDB)
 ```
 
-The first step to use annotate is the creation of a levelDB.
+The first step to use annotate is the creation of a levelDB database.
 In this example we will use a mapping file containing GenBank/RefSeq identifiers as keys, and UniProtKB identifiers as values ([input.txt](https://github.com/arthurvinx/annotate/blob/master/test/input.txt)).
 
-**Example 2**
+**Input 2**
 
 |GenBank_RefSeqProtein	| 	UniProtKB	|
 | --- 			| 	---		|
@@ -102,19 +103,19 @@ In this example we will use a mapping file containing GenBank/RefSeq identifiers
 |WP_005576999.1	| A0A1I3R2S7;L0AMX4 	|
 |AFZ74922.1		| L0ANW7		|
 
-Four arguments are required to create a levelDB with the `createdb` sub-command:
+Four arguments are required to create a levelDB with the `createdb` sub-command. To create a levelDB from the `input.txt` mapping file, type:
 
 ```bash
 annotate createdb input.txt example 0 1
 ```
 
-- Input: The file containing the key-value information (`input.txt`).
+- Input: The mapping file containing the key-value information (`input.txt`).
 
-- Output: The prefix of the output database (`example`). This prefix is used as the database name. A meaningful name, such as **genbank_refseq2uniprotkb**, is preferable. By default, this database is stored at the **.annotate** folder under your home directory.
+- Output: The prefix of the output database (`example`). This prefix is used as the database name. A meaningful name, such as **genbank_refseq2uniprotkb**, is preferable. By default, this database is stored at the **.annotate** folder under your home directory, using **.ldb** as suffix (file extension).
 
-- Key/Value: The last two arguments indicate where the key and value columns are located in the mapping file. As the index is zero-based, the key column number is `0`, and the value column number is `1`. Inform these values according to your input file. Also, note that some entries in the UniProtKB column, from **Example 2**, contains identifiers separated by a semicolon. This was defined during the criation of this particular mapping file to allow multiple identifiers for a key.
+- Key/Value: The last two arguments indicate where the key and value columns are located in the mapping file. As the index is zero-based, the key column number is `0`, and the value column number is `1`. Inform these values according to your input file. Also, note that some entries in the UniProtKB column, from **Input 2**, contains identifiers separated by a semicolon. This was defined during the criation of this particular mapping file to allow multiple identifiers for a key.
 
-You can also pass other arguments to the `createdb` sub-command, such as the column separator, whether the file has a header, and the directory used to store the database. To see a list of the existing arguments type:
+You can also pass other arguments to the `createdb` sub-command, such as the column separator, whether the file has a header, and the directory used to store the database. To see a list of the existing arguments, type:
 
 ```bash
 annotate createdb -h
@@ -176,25 +177,68 @@ optional arguments:
   --sep SEP             The separator between columns (default: \t)
 ```
 
-After creating your local key-value store, you can annotate the identifiers obtained in your alignment file:
+After the creation of a levelDB database, the `imapping` sub-command can be used to map the queries from a BLAST/DIAMOND tabular output to new identifiers. In this example we will use a DIAMOND output containing GenBank/RefSeq identifiers in the hits/subject column ([diamond.m8](https://github.com/arthurvinx/annotate/blob/master/test/diamond.m8)).
+
+Three arguments are required to annotate queries, an input, an output, and the database used for the mapping. To annotate the queries using the `example` database, type:
 
 ```bash
 annotate idmapping diamond.m8 output.txt example
 ```
 
-The arguments you see above are:
+- Input: A BLAST/DIAMOND tabular output (`diamond.m8`).
 
-- The input alignment file (`diamond.m8`).
+- Output: The desired output filename. The result is a tab-separated text file. (`output.txt`).
 
-- The name of the output file containing the annotation (`output.txt`).
+- The prefix of the levelDB to be used for the mappings (`example`).
 
-- The prefix of the levelDB you want to use, in this case, `example`.
+The expected ([output.txt](https://github.com/arthurvinx/annotate/blob/master/test/output.txt)) for this example is:
 
-- Annotate also tries to accommodate different file formats,
-  so you can specify where the expected columns are located,
-  type `annotate idmapping -h` to see a list of possible arguments.
+**Example output**
 
-An important thing to note from the output you obtained above is that not all of the queries were annotated in the output file, some having their value as `Unknown`.
+|Query |	Annotation |
+| --- | --- |
+|read1 |	Unknown |
+|read2 |	A0A1I3N6N3;L0ALD9 |
+|read3 |	Unknown |
+|read4 |	A0A1I3RLL1;L0AN04 |
+|read5 |	A0A1I3KT52;L0AFE0 |
+|read6 |	A0A1I3NAK9;L0ALK2 |
+|read7 |	A0A1I3R2S7;L0AMX4 |
+|read8 |	L0ANW7 |
 
-This could be either because annotate couldn't find a mapping for the query ID in the levelDB or because the hit couldn't reach one of annotate's thresholds -
-By default, annotate has a series of filters to ensure only the best mapping is used, but you're free to change the value of these thresholds, with parameters such as `-b` to define the minimum bit score, for instance. Type `annotate idmapping -h` to see a list of arguments and defaults you can change in your command.
+The default options generate an output containing one line for each query from the input. Some queries in this example were annotated, with some annotated as `Unknown`. This happens when annotate do not find any mapping for the hits from that query in the database, or when there are no hits meeting the thresholds. This software uses filters for some columns present in BLAST/DIAMOND tabular outputs, such as the bit score value, the alignment length, and the percent identity.
+
+In the **Example output**:
+
+- read 1 has a mapping known, but do not meet the default minimum alignment length threshold.
+- read 3 has no mapping known for the only hit.
+- read 5 and read 8 were mapped for the second hit because the first had no known mapping.
+
+This software also tries to accommodate different file formats with at least 6 columns: query, subject, percent identity, alignment length, e-value, and bit score.
+You can specify where the expected columns are located if your input is not in the BLAST/DIAMOND tabular format. To see a list of the existing arguments, type:
+
+```bash
+annotate idmapping -h
+```
+
+### Fixing plyvel
+
+During the first use after the installation, the plyvel package installed via conda may present an import error and report an undefined symbol, preventing its import and use.
+
+This error message ends like this:
+
+```bash
+ImportError: /home/vinx/miniconda3/envs/teste/lib/python3.9/site-packages/plyvel/_plyvel.cpython-39-x86_64-linux-gnu.so: undefined symbol: _ZTIN7leveldb10ComparatorE
+```
+
+In this case, the following command will reinstall the plyvel package and fix this problem:
+
+```bash
+pip3 install -U plyvel --no-cache-dir --no-deps --force-reinstall
+```
+
+The `fixplyvel` sub-command also reinstall the plyvel package via pip: 
+
+```bash
+annotate fixplyvel
+```
