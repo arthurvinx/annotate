@@ -17,13 +17,13 @@ conda install -c conda-forge -c arthurvinx annotate
 
 The conda-forge channel is necessary to get the main dependency, the plyvel Python package.
 
-Check if your installation succeeded by typing:
+Check whether your installation succeeded by typing:
 
 ```bash
 annotate --help
 ```
 
-The installation was successful if the help message was displayed.
+If the installation was successful, you will see this help message:
 
 ```bash
 usage: annotate [-h] [-v] {createdb,idmapping,fixplyvel} ...
@@ -39,13 +39,15 @@ optional arguments:
   -v, --version         show program's version number and exit
 ```
 
+As a alternative, you may install the plyvel package (version >= 1.3.0) via pip, download this repository contents, and use the annotate Python script.
+
 ## Usage
 
 Annotate uses a [levelDB](https://github.com/google/leveldb) database (key-value disk repository) to map queries to new identifiers.
 
-A mapping file is required to create a levelDB database. The valid mapping file is composed by a header (opcional) and at least two columns, one containing the identifiers that will be used as keys, and the other containing the values mapped for each key:
+A mapping file is required to create a levelDB database. A valid mapping file is composed by a header (opcional) and at least two columns, one containing the identifiers that will be used as keys, and the other containing the values mapped for each key:
 
-Example 1
+**Example 1**
 
 | key | value |
 | --- | ----- |
@@ -54,11 +56,11 @@ Example 1
 | c   | 3     |
 | a   | 4     |
 
-In the case of duplicated keys, such as the key 'a' in the Example 1, the value for this key in the database will be replaced for each new entry found in the mapping file. Thus, the final value for the key 'a' is 4.
+In the case of duplicated keys, such as the key 'a' from **Example 1**, the value for this key in the database will be replaced for each new entry found in the mapping file. Thus, the final value for the key 'a' is 4.
 
 There are arguments used to create the database that inform in which column to find the keys/values, as well as an argument informing the presence/absence of a header.
 
-To download a zip file containing the example data used in the next sections [click here](https://gist.github.com/jvfe/a1c913cd9f04c073f6d0e8a5ae85a10f/archive/eef5c90c96a4f590c6cb1cf123ca54cc4d7968c0.zip).
+To download a zip file containing the example data used in the next sections [click here](https://gist.github.com/jvfe/a1c913cd9f04c073f6d0e8a5ae85a10f/archive/eef5c90c96a4f590c6cb1cf123ca54cc4d7968c0.zip). These files are also present in the [test](https://github.com/arthurvinx/annotate/tree/master/test) folder.
 
 ### Creating the database
 
@@ -88,19 +90,31 @@ optional arguments:
 The first step to use annotate is the creation of a levelDB.
 In this example we will use a mapping file containing GenBank/RefSeq identifiers as keys, and UniProtKB identifiers as values ([input.txt](https://github.com/arthurvinx/annotate/blob/master/test/input.txt)).
 
-Four arguments are required to create a levelDB with the **createdb** sub-command:
+**Example 2**
+
+|GenBank_RefSeqProtein	| 	UniProtKB	|
+| --- 			| 	---		|
+|WP_005581541.1	| A0A1I3NYE9;L0ADC4 	|
+|WP_005575885.1	| A0A1I3N6N3;L0ALD9 	|
+|WP_005576929.1	| A0A1I3RLL1;L0AN04 	|
+|WP_015233403.1	| A0A1I3KT52;L0AFE0 	|
+|WP_005578121.1	| A0A1I3NAK9;L0ALK2 	|
+|WP_005576999.1	| A0A1I3R2S7;L0AMX4 	|
+|AFZ74922.1		| L0ANW7		|
+
+Four arguments are required to create a levelDB with the `createdb` sub-command:
 
 ```bash
 annotate createdb input.txt example 0 1
 ```
 
-- The file containing the key-value information (**input.txt**).
+- Input: The file containing the key-value information (`input.txt`).
 
-- The prefix of the output database (**example**). This prefix is used as the database name. A meaningful name, such as **genbank_refseq2uniprotkb**, is preferable. By default, this database is stored at the **.annotate** folder under your home directory.
+- Output: The prefix of the output database (`example`). This prefix is used as the database name. A meaningful name, such as **genbank_refseq2uniprotkb**, is preferable. By default, this database is stored at the **.annotate** folder under your home directory.
 
-- The last two arguments indicate where the key and value columns are located in the mapping file. As the index is zero-based, the key column number is **0**, and the value column number is **1**. These can will be different according to your input file.
+- Key/Value: The last two arguments indicate where the key and value columns are located in the mapping file. As the index is zero-based, the key column number is `0`, and the value column number is `1`. Inform these values according to your input file. Also, note that some entries in the UniProtKB column, from **Example 2**, contains identifiers separated by a semicolon. This was defined during the criation of this particular mapping file to allow multiple identifiers for a key.
 
-You can also pass other arguments to the **createdb** sub-command, such as the column separator, whether the file has a header, and the directory used to store the database. To see a list of the existing arguments type:
+You can also pass other arguments to the `createdb` sub-command, such as the column separator, whether the file has a header, and the directory used to store the database. To see a list of the existing arguments type:
 
 ```bash
 annotate createdb -h
