@@ -9,12 +9,13 @@ Annotate is a Python package that annotates each query from a BLAST/DIAMOND tabu
 
 ## Installation
 
-The main dependency of this package is the plyvel Python package.
-To install the software including its dependencies we recommend using [conda](https://docs.conda.io/en/latest/):
+The easiest way to install this software, including its dependencies, is via [conda](https://docs.conda.io/en/latest/) with:
 
 ```bash
 conda install -c conda-forge -c arthurvinx annotate
 ```
+
+The conda-forge channel is necessary to get the main dependency, the plyvel Python package.
 
 Check if your installation succeeded by typing:
 
@@ -22,13 +23,29 @@ Check if your installation succeeded by typing:
 annotate --help
 ```
 
-You should see the help message.
+The installation was successful if the help message was displayed.
 
-## Example usage
+```bash
+usage: annotate [-h] [-v] {createdb,idmapping,fixplyvel} ...
 
-- Annotate works via a key-value database, a [LevelDB](https://en.wikipedia.org/wiki/LevelDB).
-  So, in order to create your local key-value store,
-  you'll need a file in the following format:
+Annotate each query using the best alignment for which a mapping is known
+
+positional arguments:
+  {createdb,idmapping,fixplyvel}
+                        Sub-command help
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+```
+
+## Usage
+
+Annotate uses a [levelDB](https://github.com/google/leveldb) database (key-value disk repository) to map queries to new identifiers.
+
+A mapping file is required to create a levelDB database. The valid mapping file is composed by a header (opcional) and at least two columns, one containing the identifiers that will be used as keys, and the other containing the values mapped for each key:
+
+Example 1
 
 | key | value |
 | --- | ----- |
@@ -37,36 +54,115 @@ You should see the help message.
 | c   | 3     |
 | a   | 4     |
 
-(Note that repeated keys, such as 'a', will have their value reassigned in the database to the latest value found)
+In the case of duplicated keys, such as the key 'a' in the Example 1, the value for this key in the database will be replaced for each new entry found in the mapping file. Thus, the final value for the key 'a' is 4.
 
-- Thankfully, we can provide some test data to get you right to testing annotate.
-  [Click here](https://gist.github.com/jvfe/a1c913cd9f04c073f6d0e8a5ae85a10f/archive/eef5c90c96a4f590c6cb1cf123ca54cc4d7968c0.zip) to download a zip file containing the example data we'll be using in this showcase.
+There are arguments used to create the database that inform in which column to find the keys/values, as well as an argument informing the presence/absence of a header.
+
+To download a zip file containing the example data used in the next sections [click here](https://gist.github.com/jvfe/a1c913cd9f04c073f6d0e8a5ae85a10f/archive/eef5c90c96a4f590c6cb1cf123ca54cc4d7968c0.zip).
 
 ### Creating the database
 
-- The first step to start using annotate is creating a local levelDB.
-  For this purpose we'll use a file containing key-value information (input.txt).
+```bash
+usage: annotate createdb [-h] [--sep SEP] [--header HEADER] [-d DIRECTORY]
+                         input output key value
+
+Create/Update a mapping database
+
+positional arguments:
+  input                 A mapping file containing at least two columns
+  output                LevelDB prefix
+  key                   Column index (0-based) in which the keys can be found
+  value                 Column index (0-based) in which the values can be
+                        found
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --sep SEP             The separator between columns (default: \t)
+  --header HEADER       Indicates the presence of a header in the input file
+                        (default: True)
+  -d DIRECTORY, --directory DIRECTORY
+                        Directory of databases (default:
+                        $HOME/.annotate/levelDB)
+```
+
+The first step to use annotate is the creation of a levelDB.
+In this example we will use a mapping file containing GenBank/RefSeq identifiers as keys, and UniProtKB identifiers as values ([input.txt](https://github.com/arthurvinx/annotate/blob/master/test/input.txt)).
+
+Four arguments are required to create a levelDB with the **createdb** sub-command:
 
 ```bash
 annotate createdb input.txt example 0 1
 ```
 
-Let's unpack the arguments you see above:
+- The file containing the key-value information (**input.txt**).
 
-- First, we specify the file containing the key-value information (`input.txt`).
+- The prefix of the output database (**example**). This prefix is used as the database name. A meaningful name, such as **genbank_refseq2uniprotkb**, is preferable. By default, this database is stored at the **.annotate** folder under your home directory.
 
-- Then, we specify the prefix of the output levelDB (`example`),
-  this prefix will be used in the next command to indicate what levelDB you're using,
-  so choose something meaningful to your analysis.
-  By default this levelDB will be created in a `.annotate` folder under your home directory.
+- The last two arguments indicate where the key and value columns are located in the mapping file. As the index is zero-based, the key column number is **0**, and the value column number is **1**. These can will be different according to your input file.
 
-- And finally, we say where in the text file the key and value columns are located. This index is zero-based, so in our case we can say the key column is `0` and the value column is `1`, these can be different according to your input file.
+You can also pass other arguments to the **createdb** sub-command, such as the column separator, whether the file has a header, and the directory used to store the database. To see a list of the existing arguments type:
 
-- You can also pass other arguments to the `createdb` command, such as the column separator, if the file has a header and in which directory you want to create the levelDB. Type `annotate createdb -h` to see a list of all possible arguments.
+```bash
+annotate createdb -h
+```
 
 ### Annotating queries
 
-- After creating your local key-value store, you can annotate the identifiers obtained in your alignment file:
+```bash
+usage: annotate idmapping [-h] [-b BITSCORE] [-e EVALUE] [-l ALEN]
+                          [-i IDENTITY] [-d DIRECTORY] [--queryCol QUERYCOL]
+                          [--subjectCol SUBJECTCOL] [--evalueCol EVALUECOL]
+                          [--bitscoreCol BITSCORECOL] [--alenCol ALENCOL]
+                          [--pidentCol PIDENTCOL] [--all ALL]
+                          [--unknown UNKNOWN] [--sep SEP]
+                          input output ldb
+
+Translate identifiers from the input using the mapping database
+
+positional arguments:
+  input                 A BLAST/DIAMOND result in tabular format
+  output                Output filename
+  ldb                   LevelDB prefix
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -b BITSCORE, --bitscore BITSCORE
+                        Minimum bit score of a hit to be considered good
+                        (default: 50.0)
+  -e EVALUE, --evalue EVALUE
+                        Maximum e-value of a hit to be considered good
+                        (default: 0.00001)
+  -l ALEN, --alen ALEN  Minimum alignment length of a hit to be considered
+                        good (default: 50)
+  -i IDENTITY, --identity IDENTITY
+                        Minimum percent identity of a hit to be considered
+                        good (default: 80)
+  -d DIRECTORY, --directory DIRECTORY
+                        Directory of databases (default:
+                        $HOME/.annotate/levelDB)
+  --queryCol QUERYCOL   Column index (0-based) in which the query ID can be
+                        found (default: 0)
+  --subjectCol SUBJECTCOL
+                        Column index (0-based) in which the subject ID can be
+                        found (default: 1)
+  --evalueCol EVALUECOL
+                        Column index (0-based) in which the e-value can be
+                        found (default: 10)
+  --bitscoreCol BITSCORECOL
+                        Column index (0-based) in which the bit score can be
+                        found (default: 11)
+  --alenCol ALENCOL     Column index (0-based) in which the alignment length
+                        can be found (default: 3)
+  --pidentCol PIDENTCOL
+                        Column index (0-based) in which the percent identity
+                        can be found (default: 2)
+  --all ALL             Try to annotate all hits (default: False)
+  --unknown UNKNOWN     Whether to write 'Unknown' in the output for unknown
+                        mappings (default: True)
+  --sep SEP             The separator between columns (default: \t)
+```
+
+After creating your local key-value store, you can annotate the identifiers obtained in your alignment file:
 
 ```bash
 annotate idmapping diamond.m8 output.txt example
