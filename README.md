@@ -93,15 +93,15 @@ In this example we will use a mapping file containing GenBank/RefSeq identifiers
 
 **Input 2**
 
-|GenBank_RefSeqProtein	| 	UniProtKB	|
-| --- 			| 	---		|
-|WP_005581541.1	| A0A1I3NYE9;L0ADC4 	|
-|WP_005575885.1	| A0A1I3N6N3;L0ALD9 	|
-|WP_005576929.1	| A0A1I3RLL1;L0AN04 	|
-|WP_015233403.1	| A0A1I3KT52;L0AFE0 	|
-|WP_005578121.1	| A0A1I3NAK9;L0ALK2 	|
-|WP_005576999.1	| A0A1I3R2S7;L0AMX4 	|
-|AFZ74922.1		| L0ANW7		|
+| GenBank_RefSeqProtein 	| UniProtKB         	|
+|-----------------------	|-------------------	|
+| WP_005581541.1        	| A0A1I3NYE9;L0ADC4 	|
+| WP_005575885.1        	| A0A1I3N6N3;L0ALD9 	|
+| WP_005576929.1        	| A0A1I3RLL1;L0AN04 	|
+| WP_015233403.1        	| A0A1I3KT52;L0AFE0 	|
+| WP_005578121.1        	| A0A1I3NAK9;L0ALK2 	|
+| WP_005576999.1        	| A0A1I3R2S7;L0AMX4 	|
+| AFZ74922.1            	| L0ANW7            	|
 
 Four arguments are required to create a levelDB with the `createdb` sub-command. To create a levelDB from the `input.txt` mapping file, type:
 
@@ -177,7 +177,22 @@ optional arguments:
   --sep SEP             The separator between columns (default: \t)
 ```
 
-After the creation of a levelDB database, the `imapping` sub-command can be used to map the queries from a BLAST/DIAMOND tabular output to new identifiers. In this example we will use a DIAMOND output containing GenBank/RefSeq identifiers in the hits/subject column ([diamond.m8](https://github.com/arthurvinx/annotate/blob/master/test/diamond.m8)).
+After the creation of a levelDB database, the `imapping` sub-command can be used to map the queries from a BLAST/DIAMOND tabular output to new identifiers. In this example we will use a DIAMOND tabular output containing GenBank/RefSeq identifiers in the hits/subject column ([diamond.m8](https://github.com/arthurvinx/annotate/blob/master/test/diamond.m8)).
+
+**DIAMOND tabular output**
+
+|		|			|		|	|	|	|	|	|	|	|		|		|
+|-------	|----------------	|-------	|-----	|---	|---	|-----	|-----	|-----	|-----	|---------	|-------	|
+| read1 	| WP_005581541.1 	| 98.2  	| 40  	| 1 	| 0 	| 129 	| 299 	| 1   	| 57  	| 7.7e-22 	| 113.6 	|
+| read2 	| WP_005575885.1 	| 100.0 	| 60  	| 0 	| 0 	| 181 	| 2   	| 1   	| 60  	| 2.2e-24 	| 122.1 	|
+| read3 	| WP_005580014.1 	| 100.0 	| 50  	| 0 	| 0 	| 2   	| 151 	| 385 	| 434 	| 3.6e-19 	| 104.8 	|
+| read4 	| WP_005576929.1 	| 100.0 	| 98  	| 0 	| 0 	| 296 	| 3   	| 308 	| 405 	| 6.7e-42 	| 180.3 	|
+| read5 	| ELY74166.1     	| 98.0  	| 100 	| 2 	| 0 	| 300 	| 1   	| 80  	| 179 	| 7.9e-43 	| 183.3 	|
+| read5 	| WP_015233403.1 	| 98.0  	| 100 	| 2 	| 0 	| 300 	| 1   	| 98  	| 197 	| 7.9e-43 	| 183.3 	|
+| read6 	| WP_005578121.1 	| 100.0 	| 52  	| 0 	| 0 	| 1   	| 156 	| 124 	| 175 	| 1.6e-22 	| 115.9 	|
+| read7 	| WP_005576999.1 	| 92.0  	| 100 	| 8 	| 0 	| 1   	| 300 	| 14  	| 113 	| 1.1e-47 	| 199.5 	|
+| read8 	| WP_005579760.1 	| 98.0  	| 100 	| 2 	| 0 	| 2   	| 301 	| 214 	| 313 	| 1.8e-42 	| 182.2 	|
+| read8 	| AFZ74922.1     	| 98.0  	| 100 	| 2 	| 0 	| 2   	| 301 	| 188 	| 287 	| 1.8e-42 	| 182.2 	|
 
 Three arguments are required to annotate queries: an input, an output, and the database to be used for the mappings. To annotate the queries using the `example` database, type:
 
@@ -195,16 +210,16 @@ The expected [output.txt](https://github.com/arthurvinx/annotate/blob/master/tes
 
 **Example output**
 
-|Query |	Annotation |
-| --- | --- |
-|read1 |	Unknown |
-|read2 |	A0A1I3N6N3;L0ALD9 |
-|read3 |	Unknown |
-|read4 |	A0A1I3RLL1;L0AN04 |
-|read5 |	A0A1I3KT52;L0AFE0 |
-|read6 |	A0A1I3NAK9;L0ALK2 |
-|read7 |	A0A1I3R2S7;L0AMX4 |
-|read8 |	L0ANW7 |
+| Query 	| Annotation        	|
+|-------	|-------------------	|
+| read1 	| Unknown           	|
+| read2 	| A0A1I3N6N3;L0ALD9 	|
+| read3 	| Unknown           	|
+| read4 	| A0A1I3RLL1;L0AN04 	|
+| read5 	| A0A1I3KT52;L0AFE0 	|
+| read6 	| A0A1I3NAK9;L0ALK2 	|
+| read7 	| A0A1I3R2S7;L0AMX4 	|
+| read8 	| L0ANW7            	|
 
 The default options generate an output containing one line for each query from the input. Some queries in this example were annotated, with some annotated as `Unknown`. This happens when annotate do not find any mapping for the hits from that query in the database, or when there are no hits meeting the thresholds. This software uses filters for some columns present in BLAST/DIAMOND tabular outputs, such as the bit score value, the alignment length, and the percent identity.
 
