@@ -113,7 +113,7 @@ annotate createdb input.txt example 0 1
 
 - Output: The prefix of the output database (`example`). This prefix is used as the database name. A meaningful name, such as **genbank_refseq2uniprotkb**, is preferable. By default, this database is stored at the **.annotate** folder under your home directory, using **.ldb** as suffix (file extension).
 
-- Key/Value: The last two arguments indicate where the key and value columns are located in the mapping file. As the index is zero-based, the key column number is `0`, and the value column number is `1`. Inform these values according to your input file. Also, note that some entries in the UniProtKB column, from **Input 2**, contains identifiers separated by a semicolon. This was defined during the criation of this particular mapping file to allow multiple identifiers for a key.
+- Key/Value: The last two arguments indicate where the key and value columns are located in the mapping file. As the index is zero-based, the key column number is `0`, and the value column number is `1`. Inform these values according to your input file. Note that some entries in the UniProtKB column, from **Input 2**, contains identifiers separated by a semicolon. This was defined during the criation of this particular mapping file to allow multiple identifiers for a key.
 
 You can also pass other arguments to the `createdb` sub-command, such as the column separator, whether the file has a header, and the directory used to store the database. To see a list of the existing arguments, type:
 
