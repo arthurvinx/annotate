@@ -221,7 +221,7 @@ The expected [output.txt](https://github.com/arthurvinx/annotate/blob/master/tes
 | read7 	| A0A1I3R2S7;L0AMX4 	|
 | read8 	| L0ANW7            	|
 
-The default options generate an output containing one line for each query from the input. Some queries in this example were annotated, with some annotated as `Unknown`. This happens when annotate do not find any mapping for the hits from that query in the database, or when there are no hits meeting the thresholds. This software uses filters for some columns present in BLAST/DIAMOND tabular outputs, such as the bit score value, the alignment length, and the percent identity.
+The default options generate an output containing one line for each query from the input. Note that some queries in this example were annotated as `Unknown`. This happens when annotate do not find any mapping for the hits from that query in the database, or when there are no hits meeting the thresholds. This software uses filters for some columns present in BLAST/DIAMOND tabular outputs, such as the bit score value, the alignment length, and the percent identity.
 
 In the **Example output**:
 
