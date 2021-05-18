@@ -181,7 +181,7 @@ After the creation of a levelDB database, the `imapping` sub-command can be used
 
 **DIAMOND tabular output**
 
-|		|			|		|	|	|	|	|	|	|	|		|		|
+| Query	| Subject/Hit		| Identity	|Length |	|	|	|	|	|	| E-value	| Bit score	|
 |-------	|----------------	|-------	|-----	|---	|---	|-----	|-----	|-----	|-----	|---------	|-------	|
 | read1 	| WP_005581541.1 	| 98.2  	| 40  	| 1 	| 0 	| 129 	| 299 	| 1   	| 57  	| 7.7e-22 	| 113.6 	|
 | read2 	| WP_005575885.1 	| 100.0 	| 60  	| 0 	| 0 	| 181 	| 2   	| 1   	| 60  	| 2.2e-24 	| 122.1 	|
