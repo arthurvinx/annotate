@@ -12,7 +12,7 @@ Annotate is a Python package that annotates each query from a BLAST/DIAMOND tabu
 The easiest way to install this software, including its dependencies, is via [conda](https://docs.conda.io/en/latest/) with:
 
 ```bash
-conda install -c conda-forge -c arthurvinx annotate
+conda install -c conda-forge -c arthurvinx annotate -y
 pip3 install -U plyvel --no-cache-dir --no-deps --force-reinstall
 ```
 
