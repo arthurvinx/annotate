@@ -227,7 +227,7 @@ In the **Example output**:
 
 - The read 1 has a mapping known, but do not meet the default minimum alignment length threshold, being mapped to `Unknown`.
 - The read 3 has only one hit, with no known mapping, being mapped to `Unknown`.
-- The read 5 and the read 8 were mapped for the second hit, because the first hit had no known mapping.
+- The read 5 and the read 8 were mapped using the second hit, because the first hit had no known mapping.
 
 This software also tries to accommodate different file formats with at least 6 columns: query, subject, percent identity, alignment length, e-value, and bit score.
 You can specify where the expected columns are located if your input is not in the BLAST/DIAMOND tabular format. To see a list of the existing arguments, type:
