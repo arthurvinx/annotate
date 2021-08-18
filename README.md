@@ -5,7 +5,7 @@
 ![](https://anaconda.org/arthurvinx/annotate/badges/platforms.svg)
 ![](https://anaconda.org/arthurvinx/annotate/badges/license.svg)
 
-Annotate is a Python package that annotates each query from a BLAST/DIAMOND tabular output using the best alignment for which a mapping is known.
+Annotate is a Python tool that annotates each query from a BLAST/DIAMOND tabular output using the best alignment for which a mapping is known.
 
 ## Installation
 
